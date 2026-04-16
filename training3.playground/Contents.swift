@@ -265,5 +265,63 @@ bankCheck.balance = 111
 // ĐK bắt buộc nó phải có 1 thuộc tính tên là wrappedValue
 
 // Cach 1 ko dung property wrapers
+struct User {
+    private var namePrivate: String = ""
+    
+    var name: String {
+        get {
+            print("da chay vao get")
+            return namePrivate
+        }
+        set(valueNew) {
+            namePrivate = valueNew.uppercased()
+            print("da chay vao set \(namePrivate)" )
+        }
+    }
+}
 
+// Cach 2
+@propertyWrapper
+struct Uppercase {
+    var value: String = ""
+    
+    var wrappedValue: String {
+        get {
+            value
+        }
+        set(newName) {
+            value = newName.uppercased()
+        }
+    }
+}
 
+// --- Dùng chung cho 3 Struct khác nhau ---
+// 1. Struct cho quản lý kho bãi (Lưu mã sản phẩm)
+struct Warehouse {
+    @Uppercase var skuCode: String     // Mã SKU lúc nào cũng phải viết hoa
+    @Uppercase var storageZone: String // Khu vực kho (VD: ZONE A)
+}
+// 2. Struct cho Hàng không (Mã sân bay, số hiệu chuyến bay)
+struct Flight {
+    @Uppercase var origin: String      // VD: HAN
+    @Uppercase var destination: String // VD: SGN
+    @Uppercase var airlineCode: String // VD: VJ
+}
+
+// 3. Struct cho tài chính (Mã chứng khoán, tiền tệ)
+struct Stock {
+    @Uppercase var symbol: String   // Mã cổ phiếu: AAPL, BTC
+    @Uppercase var currency: String // Loại tiền: USD, VND
+}
+
+// --- Kiểm tra kết quả ---
+var myStock = Stock()
+myStock.symbol = "btc"
+myStock.currency = "usd"
+
+var myFlight = Flight()
+myFlight.origin = "hanoi"
+myFlight.destination = "singapore"
+
+print("Stock: \(myStock.symbol) in \(myStock.currency)")
+print("Flight: From \(myFlight.origin) to \(myFlight.destination)")
