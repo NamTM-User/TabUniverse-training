@@ -313,3 +313,54 @@ for item in items {
     }
 }
 ```
+
+## 14. Initialization (Khởi tạo)
+Quá trình chuẩn bị cho một thực thể (instance) của class, struct, hoặc enum sẵn sàng để sử dụng. Bắt buộc phải gán giá trị cho toàn bộ `Stored Properties` trước khi quá trình khởi tạo hoàn tất.
+
+```swift
+struct Fahrenheit {
+    var temperature: Double
+    
+    // Khởi tạo mặc định
+    init() {
+        temperature = 32.0
+    }
+}
+var f = Fahrenheit()
+
+// Failable Initializer (Khởi tạo có thể thất bại, trả về Optional)
+struct Animal {
+    let species: String
+    init?(species: String) {
+        if species.isEmpty { return nil }
+        self.species = species
+    }
+}
+
+## 15. Deinitialization (Hủy khởi tạo)
+Hủy khởi tạo là quá trình tự động dọn dẹp bộ nhớ ngay trước khi một thực thể (instance) bị hệ thống giải phóng.
+* **Đặc điểm:** Chỉ áp dụng cho **Class** (Reference type). Struct và Enum là Value type nên không có `deinit`.
+* **Cách hoạt động:** Hàm `deinit` được gọi tự động, bạn không thể tự gọi nó bằng tay.
+* **Ứng dụng:** Thường được dùng để dọn dẹp các tài nguyên không được quản lý tự động, ví dụ như đóng file đang mở, ngắt kết nối mạng, hoặc gỡ bỏ các observer .
+
+```swift
+class FileHandler {
+    let filename: String
+    
+    init(filename: String) {
+        self.filename = filename
+        print("Đang mở file \(filename)...")
+    }
+    
+    // Hàm deinit không có ngoặc tròn vì không nhận tham số
+    deinit {
+        print("Đang đóng file \(filename) một cách an toàn!")
+    }
+}
+
+// Khai báo một Optional để có thể gán bằng nil
+var myFile: FileHandler? = FileHandler(filename: "data.txt")
+
+// Khi gán bằng nil, instance không còn ai tham chiếu tới -> deinit được gọi
+myFile = nil 
+// Console in ra: "Đang đóng file data.txt một cách an toàn!"
