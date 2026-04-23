@@ -277,3 +277,28 @@ func testLeak() {
 }
 
 testLeak()
+
+
+// ============================== update funcUploadfile không dùng async ====================================================
+
+// @escaping trong Swift dùng để đánh dấu closure có thể được giữ lại và chạy sau khi function kết thúc.
+
+// Khi closure:
+
+// được lưu lại vào biến hoặc chạy sau (async, delay, callback API…) -> thì nó “thoát khỏi” phạm vi function -> cần @escaping
+func uploadFile(name: String, completion: @escaping () -> Void) {
+    print("Bắt đầu upload...")
+
+    Task {
+        try? await Task.sleep(nanoseconds: 5_000_000_000)
+
+        print("Upload xong")
+        completion()
+    }
+    
+    print("Check xem closure chay truoc hay sau")
+}
+
+uploadFile(name: "file1") {
+    print("DONEEE123")
+}
