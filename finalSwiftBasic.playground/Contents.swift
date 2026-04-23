@@ -229,3 +229,51 @@ testLeakMemory()
 
 
 
+// ================================================ Weak =====================================================
+
+// Swift quản lý bộ nhờ bằng ARC
+
+// Mỗi object (class) có một reference count (số lượng tham chiếu trỏ tới nó) khi:
+// +1: có thêm biến giữ nó
+// -1: biến bị giải phóng
+//Khi count = 0 → object bị deinit (giải phóng bộ nhớ)
+
+class Person {
+    var name: String
+    var idCard: IDCard?
+    
+    init(name: String) {
+        self.name = name
+    }
+    
+    deinit {
+        print("Person \(name) deinit")
+    }
+}
+
+class IDCard {
+    var number: String
+    weak var owner: Person?
+    
+    init(number: String) {
+        self.number = number
+    }
+    
+    deinit {
+        print("IDCard \(number) deinit")
+    }
+}
+
+// ======> person giữ Card  , card giữ Person nếu không dùng weak
+
+// ======> person giữ card -> OK card.owner là weak -> KHÔNG giữ person
+
+func testLeak() {
+    let person = Person(name: "Nam")
+    let card = IDCard(number: "123")
+    
+    person.idCard = card
+    card.owner = person
+}
+
+testLeak()
